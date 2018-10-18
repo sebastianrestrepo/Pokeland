@@ -153,7 +153,7 @@ public class UI {
 			pantallas = 3;
 			break;
 		case 3:
-			if(insSwitch < 8) {
+			if(insSwitch < 9) {
 				insSwitch++;
 			}
 			// Click Bayas
