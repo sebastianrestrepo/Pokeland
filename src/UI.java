@@ -32,7 +32,7 @@ public class UI {
 		nombre = app.loadImage("../data/ui/nombre.png");
 		amarilla = app.loadImage("../data/ui/amarilla.png");
 		// Instrucciones
-		ins = new PImage[9];
+		ins = new PImage[10];
 		for (int i = 0; i < ins.length; i++) {
 			ins[i] = app.loadImage("../data/ins/ins" + i + ".png");
 		}
@@ -129,7 +129,7 @@ public class UI {
 				break;
 			}
 			//Instrucciones
-			if(insSwitch<9) {
+			if(insSwitch<10) {
 				app.image(ins[insSwitch], 0, 0);
 			}
 			
@@ -153,7 +153,7 @@ public class UI {
 			pantallas = 3;
 			break;
 		case 3:
-			if(insSwitch < 9) {
+			if(insSwitch < 10) {
 				insSwitch++;
 			}
 			// Click Bayas
