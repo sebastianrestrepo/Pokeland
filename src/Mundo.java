@@ -2,10 +2,11 @@ import processing.core.PApplet;
 
 public class Mundo {
 
-	public Mundo(PApplet app) {
-		
-	}
+	private PApplet app;
 	
+	public Mundo(PApplet app) {
+		this.app = app;
+	}
 	
 	
 }
