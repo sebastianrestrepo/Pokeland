@@ -6,9 +6,10 @@ public class UI {
 	private PApplet app;
 	private Mundo m;
 	private PImage splash, amarilla, nombre;
+	private PImage equipoAmarillo, equipoRojo, equipoAzul, equipoVerde;
 	private PImage fondoVerano, fondoInvierno, fondoOtono, fondoPrimavera;
 	private PImage[] ins, ui;
-	private int pantallas, insSwitch, botones, versionesUI, estacion;
+	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion;
 	private PImage[] hover;
 
 	public UI(PApplet app, Mundo m) {
@@ -26,11 +27,20 @@ public class UI {
 		insSwitch = 0;
 	}
 
+	public void seleccionEquipo() {
+		selEquipo = (int) app.random(0, 4);
+	}
+
 	public void cargar() {
 		// Inicio
 		splash = app.loadImage("../data/ui/splash.png");
 		nombre = app.loadImage("../data/ui/nombre.png");
 		amarilla = app.loadImage("../data/ui/amarilla.png");
+		// Selección de Equipos
+		equipoAmarillo = app.loadImage("../data/equipos/amarillo.png");
+		equipoAzul = app.loadImage("../data/equipos/azul.png");
+		equipoRojo = app.loadImage("../data/equipos/rojo.png");
+		equipoVerde = app.loadImage("../data/equipos/verde.png");
 		// Instrucciones
 		ins = new PImage[10];
 		for (int i = 0; i < ins.length; i++) {
@@ -80,7 +90,20 @@ public class UI {
 			app.image(nombre, 0, 0);
 			break;
 		case 2:
-			app.image(amarilla, 0, 0);
+			switch (selEquipo) {
+			case 0:
+				app.image(equipoAmarillo, 0, 0);
+				break;
+			case 1:
+				app.image(equipoRojo, 0, 0);
+				break;
+			case 2:
+				app.image(equipoVerde, 0, 0);
+				break;
+			case 3:
+				app.image(equipoAzul, 0, 0);
+				break;
+			}
 			break;
 		case 3:
 			// Estacion
@@ -128,11 +151,11 @@ public class UI {
 				app.image(hover[2], 0, 0);
 				break;
 			}
-			//Instrucciones
-			if(insSwitch<10) {
+			// Instrucciones
+			if (insSwitch < 10) {
 				app.image(ins[insSwitch], 0, 0);
 			}
-			
+
 			break;
 
 		// Final Pantallas
@@ -144,7 +167,7 @@ public class UI {
 		System.out.println("Pantallas: " + pantallas);
 		switch (pantallas) {
 		case 1:
-			if(app.mouseX > 527 && app.mouseX < 753 && app.mouseY > 447 && app.mouseY <495) {
+			if (app.mouseX > 527 && app.mouseX < 753 && app.mouseY > 447 && app.mouseY < 495) {
 				pantallas = 2;
 				System.out.println(true);
 			}
@@ -153,7 +176,7 @@ public class UI {
 			pantallas = 3;
 			break;
 		case 3:
-			if(insSwitch < 10) {
+			if (insSwitch < 10) {
 				insSwitch++;
 			}
 			// Click Bayas
@@ -175,7 +198,7 @@ public class UI {
 	public void keyReleased() {
 		switch (pantallas) {
 		case 0:
-			if(app.key == app.ENTER) {
+			if (app.key == app.ENTER) {
 				pantallas = 1;
 			}
 			break;
@@ -199,5 +222,13 @@ public class UI {
 		this.pantallas = pantallas;
 	}
 
+	public int getSelEquipo() {
+		return selEquipo;
+	}
+
+	public void setSelEquipo(int selEquipo) {
+		this.selEquipo = selEquipo;
+	}
+	
 //----------FINAL DE LA CLASE UI---------//
 }

@@ -9,6 +9,7 @@ public class Mundo implements Observer {
 	private Cargar cargar;
 	private UI ui;
 	private ComunicacionCliente cc;
+	private int equipo;
 
 	public Mundo(PApplet app) {
 		this.app = app;
@@ -25,7 +26,7 @@ public class Mundo implements Observer {
 
 	public void click() {
 		ui.click();
-		cc.enviarMensaje(new Mensaje("Holap", 1));
+		cc.enviarMensaje(new Mensaje("Holap", 1, ui.getSelEquipo()));
 	}
 
 	public void keyKeleased() {
@@ -38,6 +39,7 @@ public class Mundo implements Observer {
 		if(o instanceof ComunicacionCliente) {
 			Mensaje m = (Mensaje) arg;
 			System.out.println("Soy el Cliente #:" + m.getIndex());
+			equipo = m.getIndex();
 		}
 		
 	}
@@ -49,6 +51,14 @@ public class Mundo implements Observer {
 
 	public void setCargar(Cargar cargar) {
 		this.cargar = cargar;
+	}
+
+	public int getEquipo() {
+		return equipo;
+	}
+
+	public void setEquipo(int equipo) {
+		this.equipo = equipo;
 	}
 
 	// ----------------FINAL DE LA CLASE MUNDO------------//
