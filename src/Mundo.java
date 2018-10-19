@@ -27,6 +27,7 @@ public class Mundo implements Observer {
 	public void click() {
 		ui.click();
 		cc.enviarMensaje(new Mensaje("Holap", 1, ui.getSelEquipo()));
+		System.out.println("CLICK EQUIPO: " + ui.getSelEquipo());
 	}
 
 	public void keyKeleased() {

@@ -30,6 +30,7 @@ public class UI {
 
 	public void seleccionEquipo() {
 		selEquipo = (int) app.random(0, 4);
+		System.out.println("Equipo seleccionado: " + selEquipo);
 	}
 
 	public void cargar() {
