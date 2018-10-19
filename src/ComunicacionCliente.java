@@ -36,6 +36,7 @@ public class ComunicacionCliente extends Observable implements Runnable {
 		while (true) {
 			try {
 				if (s.isConnected()) {
+					System.out.println("Esperando msj");
 					recibirMensaje();
 				}
 				Thread.sleep(200);
@@ -48,14 +49,14 @@ public class ComunicacionCliente extends Observable implements Runnable {
 	private void recibirMensaje() {
 		try {
 			Mensaje m = (Mensaje) entrada.readObject();
+			setChanged();
+			notifyObservers(m);
+			clearChanged();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		setChanged();
-		notifyObservers("I");
-		clearChanged();
 	}
 	
     public void enviarMensaje(final Object obj){

@@ -1,6 +1,9 @@
+import java.util.Observable;
+import java.util.Observer;
+
 import processing.core.PApplet;
 
-public class Mundo {
+public class Mundo implements Observer {
 
 	private PApplet app;
 	private Cargar cargar;
@@ -13,6 +16,7 @@ public class Mundo {
 		ui = new UI(app, this);
 		cc = new ComunicacionCliente();
 		new Thread(cc).start();
+		cc.addObserver(this);
 	}
 
 	public void pintar() {
@@ -21,11 +25,21 @@ public class Mundo {
 
 	public void click() {
 		ui.click();
-		cc.enviarMensaje(new Mensaje("Holap"));
+		cc.enviarMensaje(new Mensaje("Holap", 1));
 	}
 
 	public void keyKeleased() {
 		ui.keyReleased();
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+
+		if(o instanceof ComunicacionCliente) {
+			Mensaje m = (Mensaje) arg;
+			System.out.println("Soy el Cliente #:" + m.getIndex());
+		}
+		
 	}
 
 	// ----------------GETTERS Y SETTERS------------//
