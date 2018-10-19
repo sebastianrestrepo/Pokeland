@@ -5,11 +5,14 @@ public class Mundo {
 	private PApplet app;
 	private Cargar cargar;
 	private UI ui;
+	private ComunicacionCliente cc;
 
 	public Mundo(PApplet app) {
 		this.app = app;
 		cargar = new Cargar(app);
 		ui = new UI(app, this);
+		cc = new ComunicacionCliente();
+		new Thread(cc).start();
 	}
 
 	public void pintar() {
@@ -18,6 +21,7 @@ public class Mundo {
 
 	public void click() {
 		ui.click();
+		cc.enviarMensaje(new Mensaje("Holap"));
 	}
 
 	public void keyKeleased() {
