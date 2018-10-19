@@ -23,7 +23,8 @@ public class ComunicacionCliente extends Observable implements Runnable {
 			try {
 				System.out.println("Conexión iniciada");
 				// -----------Cambiar a IP correspondiente-----------//
-				s = new Socket(InetAddress.getByName("192.168.0.11"), 5000);
+				//192.168.0.11
+				s = new Socket(InetAddress.getByName("172.30.183.136"), 5000);
 				salida = new ObjectOutputStream(s.getOutputStream());
 				entrada = new ObjectInputStream(s.getInputStream());
 				System.out.println("Flujos enlazados");

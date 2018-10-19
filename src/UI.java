@@ -25,6 +25,7 @@ public class UI {
 		botones = 0;
 		pantallas = 0;
 		insSwitch = 0;
+		seleccionEquipo();
 	}
 
 	public void seleccionEquipo() {
@@ -169,6 +170,7 @@ public class UI {
 		case 1:
 			if (app.mouseX > 527 && app.mouseX < 753 && app.mouseY > 447 && app.mouseY < 495) {
 				pantallas = 2;
+				// seleccionEquipo();
 				System.out.println(true);
 			}
 			break;
