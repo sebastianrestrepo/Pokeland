@@ -41,6 +41,23 @@ public class Mundo implements Observer, Runnable {
 
 	public void click() {
 		ui.click();
+		
+		switch (ui.getPantallas()) {
+	
+			
+		case 3: 
+			if (ui.getInsSwitch()==9) {
+				cc.enviarMensaje(new Mensaje("listo", 1, ui.getSelEquipo()));
+				System.out.println("Envio mensaje listo: ");
+
+			}
+			
+			if (ui.isTurnoterminado()) {
+				cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
+				System.out.println("turnoterminado");
+			}
+			break;
+		}
 
 	}
 
@@ -53,8 +70,13 @@ public class Mundo implements Observer, Runnable {
 				cc.addObserver(this);
 				cc.enviarMensaje(new Mensaje("Holap", 1, ui.getSelEquipo()));
 
-				System.out.println("CLICK EQUIPO: " + ui.getSelEquipo());
+				System.out.println("Hola soy el equipo: " + ui.getSelEquipo());
 			}
+			break;
+			
+			
+		case 3: 
+			
 			break;
 		}
 		ui.keyReleased();
@@ -67,16 +89,22 @@ public class Mundo implements Observer, Runnable {
 
 		if (o instanceof ComunicacionCliente) {
 			Mensaje m = (Mensaje) arg;
-			equipo = m.getIndex() - 1;
 
 			if (m.getM().equalsIgnoreCase("equipo")) {
+				equipo = m.getIndex() - 1;
 				ui.seleccionEquipo();
-			}
-			System.out.println("Soy el Cliente #:" + m.getIndex() + equipo);
+				System.out.println("Soy el Cliente #:" + m.getIndex() + equipo);
 
-			if (m.getM().equalsIgnoreCase("start")) {
+			}
+
+			else if (m.getM().equalsIgnoreCase("start")) {
 				start = true;
 
+			}
+			
+			else if (m.getM().equalsIgnoreCase("turno")) {
+				ui.setTurno(m.getIndex());
+				System.out.println("Turno" + m.getIndex());
 			}
 
 		}

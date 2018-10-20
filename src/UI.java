@@ -4,24 +4,25 @@ import java.util.Observer;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class UI  implements Observer {
+public class UI implements Observer {
 
 	private PApplet app;
 	private Mundo m;
 	private PImage splash, amarilla, nombre;
 	private PImage equipoAmarillo, equipoRojo, equipoAzul, equipoVerde;
 	private PImage fondoVerano, fondoInvierno, fondoOtono, fondoPrimavera;
-	private PImage[] ins, ui;
-	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion;
+	private PImage[] ins, ui, uiAm, uiAz, uiV, uiR;
+	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion, turno;
 	private PImage[] hover;
 	private int equipoTemp;
+	private boolean turnoterminado;
 
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
 		this.m = m;
 		cargar();
 		inicializar();
-	
+
 	}
 
 	public void inicializar() {
@@ -30,11 +31,14 @@ public class UI  implements Observer {
 		botones = 0;
 		pantallas = 0;
 		insSwitch = 0;
+		turno = 0;
+		turnoterminado = false;
 	}
 
 	public void seleccionEquipo() {
 		selEquipo = m.getEquipo();
 		System.out.println("EQUIPO" + selEquipo);
+		versionesUI = selEquipo;
 	}
 
 	public void cargar() {
@@ -48,34 +52,33 @@ public class UI  implements Observer {
 		equipoRojo = app.loadImage("../data/equipos/rojo.png");
 		equipoVerde = app.loadImage("../data/equipos/verde.png");
 		// Instrucciones
-		ins = new PImage[10];
+		ins = new PImage[11];
 		for (int i = 0; i < ins.length; i++) {
 			ins[i] = app.loadImage("../data/ins/ins" + i + ".png");
 		}
 		// Hover
 		hover = m.getCargar().getHover();
-		// UI Azul
-		ui = new PImage[16];
-		for (int i = 0; i < 3; i++) {
-			ui[i] = app.loadImage("../data/turnos/blue" + i + ".png");
-		}
-		// UI Verde
-		for (int i = 4; i < 6; i++) {
-			for (int j = 0; j < 3; j++) {
-				ui[i] = app.loadImage("../data/turnos/green" + j + ".png");
-			}
+		// UI Amarillo
+		uiAm = new PImage[4];
+		for (int i = 0; i < uiAm.length; i++) {
+			uiAm[i] = app.loadImage("../data/turnos/yellow" + i + ".png");
 		}
 		// UI Roja
-		for (int i = 7; i < 9; i++) {
-			for (int j = 0; j < 3; j++) {
-				ui[i] = app.loadImage("../data/turnos/red" + j + ".png");
-			}
+		uiR = new PImage[4];
+		for (int j = 0; j < uiR.length; j++) {
+			uiR[j] = app.loadImage("../data/turnos/red" + j + ".png");
 		}
-		// UI Amarilla
-		for (int i = 9; i < 12; i++) {
-			for (int j = 0; j < 3; j++) {
-				ui[i] = app.loadImage("../data/turnos/yellow" + j + ".png");
-			}
+
+		// UI Verde
+		uiV = new PImage[4];
+		for (int j = 0; j < uiV.length; j++) {
+			uiV[j] = app.loadImage("../data/turnos/green" + j + ".png");
+		}
+
+		// UI Azul
+		uiAz = new PImage[4];
+		for (int j = 0; j < uiAz.length; j++) {
+			uiAz[j] = app.loadImage("../data/turnos/blue" + j + ".png");
 		}
 		// Fondo Primavera
 		fondoPrimavera = app.loadImage("../data/Fondos/back0.png");
@@ -93,7 +96,7 @@ public class UI  implements Observer {
 			app.image(splash, 0, 0);
 			break;
 		case 2:
-			//PANTALLA DE ASIGNACIÓN DE EQUIPO
+			// PANTALLA DE ASIGNACIÓN DE EQUIPO
 			switch (selEquipo) {
 			case 0:
 				app.image(equipoAmarillo, 0, 0);
@@ -109,8 +112,9 @@ public class UI  implements Observer {
 				break;
 			}
 			break;
+		/// --------------------JUEGOOOOOOOOOOOOOOOO----------------
 		case 3:
-			//backgrounds de las estaciones
+			// backgrounds de las estaciones
 			switch (estacion) {
 			case 0:
 				app.image(fondoPrimavera, 0, 0);
@@ -128,16 +132,16 @@ public class UI  implements Observer {
 			// Version UI segun equipo
 			switch (versionesUI) {
 			case 0:
-				app.image(ui[0], 0, 0);
+				app.image(uiAm[turno], 0, 0);
 				break;
 			case 1:
-				app.image(ui[1], 0, 0);
+				app.image(uiR[turno], 0, 0);
 				break;
 			case 2:
-				app.image(ui[2], 0, 0);
+				app.image(uiV[turno], 0, 0);
 				break;
 			case 3:
-				app.image(ui[3], 0, 0);
+				app.image(uiAz[turno], 0, 0);
 				break;
 			}
 			// Botones
@@ -160,24 +164,6 @@ public class UI  implements Observer {
 				app.image(ins[insSwitch], 0, 0);
 			}
 
-			break;
-
-		// Final Pantallas
-		}
-//Final Pintar
-		
-		
-		
-	}
-
-	public void click() {
-		System.out.println("Pantallas: " + pantallas);
-		switch (pantallas) {
-	
-		case 3:
-			if (insSwitch < 10) {
-				insSwitch++;
-			}
 			// Click Bayas
 			if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
 				botones = 1;
@@ -190,6 +176,46 @@ public class UI  implements Observer {
 			if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
 				botones = 3;
 			}
+			if (turno == selEquipo) {
+			app.ellipse(600, 600, 50, 50);
+			app.fill(255);
+			}
+			break;
+
+		/// --------------------JUEGOOOOOOOOOOOOOOOO----------------
+
+		// Final Pantallas
+		}
+		// Final Pintar
+
+	}
+
+	public void click() {
+		System.out.println("Pantallas: " + pantallas);
+		System.out.println("InsSwitch: " + insSwitch);
+		switch (pantallas) {
+
+		case 3:
+			if (insSwitch < 11) {
+				insSwitch++;
+
+			}
+			// Click Bayas
+			if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+			}
+			// Click Arboles
+			if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
+			}
+			// Click Pokebola
+			if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
+			}
+
+			if (turno == selEquipo) {
+				if (app.dist(app.mouseX, app.mouseY, 600, 600) < 50) {
+					turnoterminado = true;
+				}
+			} 
+			
 			break;
 		}
 	}
@@ -198,32 +224,39 @@ public class UI  implements Observer {
 		switch (pantallas) {
 		case 0:
 			if (app.key == app.ENTER) {
-					pantallas = 2;
+				pantallas = 2;
 			}
 			break;
 		}
 	}
 
-
 	@Override
 	public void update(Observable o, Object arg) {
-		
-		if(o instanceof ComunicacionCliente) {
+
+		if (o instanceof ComunicacionCliente) {
 			Mensaje m = (Mensaje) arg;
-			
+
 			if (m.getM().equalsIgnoreCase("equipo")) {
-				equipoTemp = m.getIndex()-1;
+				equipoTemp = m.getIndex() - 1;
 				System.out.println("Soy el Cliente #:" + m.getIndex() + selEquipo);
 			}
-		
+
 		}
-		
-		
-	} 
-	
+
+	}
+
 	// ------GETTERS Y SETTERS-----//
+
 	public int getBotones() {
 		return botones;
+	}
+
+	public boolean isTurnoterminado() {
+		return turnoterminado;
+	}
+
+	public void setTurnoterminado(boolean turnoterminado) {
+		this.turnoterminado = turnoterminado;
 	}
 
 	public void setBotones(int botones) {
@@ -246,6 +279,45 @@ public class UI  implements Observer {
 		this.selEquipo = selEquipo;
 	}
 
-	
-//----------FINAL DE LA CLASE UI---------//
+	public PImage[] getIns() {
+		return ins;
+	}
+
+	public void setIns(PImage[] ins) {
+		this.ins = ins;
+	}
+
+	public int getInsSwitch() {
+		return insSwitch;
+	}
+
+	public void setInsSwitch(int insSwitch) {
+		this.insSwitch = insSwitch;
+	}
+
+	public int getVersionesUI() {
+		return versionesUI;
+	}
+
+	public void setVersionesUI(int versionesUI) {
+		this.versionesUI = versionesUI;
+	}
+
+	public int getEstacion() {
+		return estacion;
+	}
+
+	public void setEstacion(int estacion) {
+		this.estacion = estacion;
+	}
+
+	public int getTurno() {
+		return turno;
+	}
+
+	public void setTurno(int turno) {
+		this.turno = turno;
+	}
+
+	// ----------FINAL DE LA CLASE UI---------//
 }

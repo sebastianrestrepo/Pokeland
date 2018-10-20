@@ -18,7 +18,7 @@ public class ComunicacionCliente extends Observable implements Runnable {
 				System.out.println("Conexión iniciada");
 				// -----------Cambiar a IP correspondiente-----------//
 				//192.168.0.11
-				s = new Socket(InetAddress.getByName("192.168.0.8"), 5000);
+				s = new Socket(InetAddress.getByName("192.168.0.25"), 5000);
 				salida = new ObjectOutputStream(s.getOutputStream());
 				entrada = new ObjectInputStream(s.getInputStream());
 				System.out.println("Flujos enlazados");
@@ -34,7 +34,6 @@ public class ComunicacionCliente extends Observable implements Runnable {
 		while (conectado) {
 			try {
 				if (s.isConnected()) {
-					System.out.println("Esperando msj");
 					recibirMensaje();
 				}
 				Thread.sleep(200);
