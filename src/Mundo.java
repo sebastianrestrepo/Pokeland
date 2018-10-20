@@ -12,6 +12,7 @@ public class Mundo implements Observer, Runnable {
 	private ComunicacionCliente cc;
 	private int equipo;
 	private boolean start;
+	
 
 	public Mundo(PApplet app) {
 		this.app = app;
@@ -52,13 +53,15 @@ public class Mundo implements Observer, Runnable {
 
 			}
 			
-			if (ui.isTurnoterminado()) {
-				cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
-				System.out.println("turnoterminado");
-			}
+			
 			break;
 		}
 
+	}
+	
+	public void turnoTerminado() {
+			cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
+			System.out.println("turnoterminado");
 	}
 
 	public void keyKeleased() {
@@ -102,16 +105,28 @@ public class Mundo implements Observer, Runnable {
 
 			}
 			
-			else if (m.getM().equalsIgnoreCase("turno")) {
+			 if (m.getM().equalsIgnoreCase("turno")) {
 				ui.setTurno(m.getIndex());
+				if (m.getEquipo() <= 2) {
+					ui.setEstacion(0);
+				} else if (m.getEquipo() > 2 && m.getEquipo()<=5) {
+					ui.setEstacion(1);
+				} else if (m.getEquipo() > 5 && m.getEquipo()<=8) {
+					ui.setEstacion(2);
+				} else if (m.getEquipo() > 8) {
+					ui.setEstacion(3);
+				} 
+				
 				System.out.println("Turno" + m.getIndex());
 			}
-
+			
+			
 		}
 
 	}
 
 	// ----------------GETTERS Y SETTERS------------//
+	
 	public Cargar getCargar() {
 		return cargar;
 	}

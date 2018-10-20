@@ -15,7 +15,7 @@ public class UI implements Observer {
 	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion, turno;
 	private PImage[] hover;
 	private int equipoTemp;
-	private boolean turnoterminado;
+	private boolean turnoterminado, turnoactivado;
 
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
@@ -33,6 +33,7 @@ public class UI implements Observer {
 		insSwitch = 0;
 		turno = 0;
 		turnoterminado = false;
+		turnoactivado = false;
 	}
 
 	public void seleccionEquipo() {
@@ -177,8 +178,15 @@ public class UI implements Observer {
 				botones = 3;
 			}
 			if (turno == selEquipo) {
-			app.ellipse(600, 600, 50, 50);
-			app.fill(255);
+				turnoactivado = true;
+			
+			} else {
+				turnoactivado = false;
+			}
+			
+			if (turnoactivado) {
+				app.ellipse(600, 600, 50, 50);
+				app.fill(255);
 			}
 			break;
 
@@ -200,24 +208,37 @@ public class UI implements Observer {
 				insSwitch++;
 
 			}
-			// Click Bayas
-			if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
-			}
-			// Click Arboles
-			if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
-			}
-			// Click Pokebola
-			if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
-			}
-
-			if (turno == selEquipo) {
+			
+			 if (turnoactivado) {
+				System.out.println("T" + turno + "e" + selEquipo);
 				if (app.dist(app.mouseX, app.mouseY, 600, 600) < 50) {
 					turnoterminado = true;
+					m.turnoTerminado();
+					turnoactivado = false;
 				}
 			} 
+
+			// Click Bayas
+			else if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+			}
+			// Click Arboles
+			else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
+			}
+			// Click Pokebola
+			else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
+			}
+
 			
 			break;
 		}
+	}
+
+	public boolean isTurnoactivado() {
+		return turnoactivado;
+	}
+
+	public void setTurnoactivado(boolean turnoactivado) {
+		this.turnoactivado = turnoactivado;
 	}
 
 	public void keyReleased() {
