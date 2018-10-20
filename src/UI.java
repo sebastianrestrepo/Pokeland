@@ -1,7 +1,10 @@
+import java.util.Observable;
+import java.util.Observer;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class UI {
+public class UI  implements Observer {
 
 	private PApplet app;
 	private Mundo m;
@@ -11,12 +14,14 @@ public class UI {
 	private PImage[] ins, ui;
 	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion;
 	private PImage[] hover;
+	private int equipoTemp;
 
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
 		this.m = m;
 		cargar();
 		inicializar();
+	
 	}
 
 	public void inicializar() {
@@ -25,12 +30,11 @@ public class UI {
 		botones = 0;
 		pantallas = 0;
 		insSwitch = 0;
-		seleccionEquipo();
 	}
 
 	public void seleccionEquipo() {
-		selEquipo = (int) app.random(0, 4);
-		System.out.println("Equipo seleccionado: " + selEquipo);
+		selEquipo = m.getEquipo();
+		System.out.println("EQUIPO" + selEquipo);
 	}
 
 	public void cargar() {
@@ -88,10 +92,8 @@ public class UI {
 		case 0:
 			app.image(splash, 0, 0);
 			break;
-		case 1:
-			app.image(nombre, 0, 0);
-			break;
 		case 2:
+			//PANTALLA DE ASIGNACIÓN DE EQUIPO
 			switch (selEquipo) {
 			case 0:
 				app.image(equipoAmarillo, 0, 0);
@@ -108,7 +110,7 @@ public class UI {
 			}
 			break;
 		case 3:
-			// Estacion
+			//backgrounds de las estaciones
 			switch (estacion) {
 			case 0:
 				app.image(fondoPrimavera, 0, 0);
@@ -123,7 +125,7 @@ public class UI {
 				app.image(fondoInvierno, 0, 0);
 				break;
 			}
-			// Version UI
+			// Version UI segun equipo
 			switch (versionesUI) {
 			case 0:
 				app.image(ui[0], 0, 0);
@@ -163,21 +165,15 @@ public class UI {
 		// Final Pantallas
 		}
 //Final Pintar
+		
+		
+		
 	}
 
 	public void click() {
 		System.out.println("Pantallas: " + pantallas);
 		switch (pantallas) {
-		case 1:
-			if (app.mouseX > 527 && app.mouseX < 753 && app.mouseY > 447 && app.mouseY < 495) {
-				pantallas = 2;
-				// seleccionEquipo();
-				System.out.println(true);
-			}
-			break;
-		case 2:
-			pantallas = 3;
-			break;
+	
 		case 3:
 			if (insSwitch < 10) {
 				insSwitch++;
@@ -202,12 +198,29 @@ public class UI {
 		switch (pantallas) {
 		case 0:
 			if (app.key == app.ENTER) {
-				pantallas = 1;
+					pantallas = 2;
 			}
 			break;
 		}
 	}
 
+
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		if(o instanceof ComunicacionCliente) {
+			Mensaje m = (Mensaje) arg;
+			
+			if (m.getM().equalsIgnoreCase("equipo")) {
+				equipoTemp = m.getIndex()-1;
+				System.out.println("Soy el Cliente #:" + m.getIndex() + selEquipo);
+			}
+		
+		}
+		
+		
+	} 
+	
 	// ------GETTERS Y SETTERS-----//
 	public int getBotones() {
 		return botones;
@@ -232,6 +245,7 @@ public class UI {
 	public void setSelEquipo(int selEquipo) {
 		this.selEquipo = selEquipo;
 	}
+
 	
 //----------FINAL DE LA CLASE UI---------//
 }
