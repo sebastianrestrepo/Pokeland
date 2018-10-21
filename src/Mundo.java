@@ -40,72 +40,74 @@ public class Mundo implements Observer, Runnable {
 
 	public void click() {
 		ui.click();
-		
+
 		switch (ui.getPantallas()) {
-	
-			
-		case 3: 
-			if (ui.getInsSwitch()==9) {
+
+		case 3:
+			if (ui.getInsSwitch() == 9) {
 				cc.enviarMensaje(new Mensaje("listo", 1, ui.getSelEquipo()));
 				System.out.println("Envio mensaje listo: ");
 			}
-			
-			 if (ui.isTurnoactivado()) {
 
-			// Click Bayas
-			 if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
-				 
-			}
-			// Click Arboles
-			else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
-				switch (ui.getAcciones()) {
-				case 0:
-					ui.setPedirArbol(true);
-					ui.addArbol();
-					ui.setAcciones(ui.getAcciones()+1);
-					cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+			if (ui.isTurnoactivado()) {
 
-					break;
-				case 1:
-					ui.setPedirArbol(true);
-					ui.setAcciones(ui.getAcciones()+1);
-					ui.addArbol();
-					cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+				// Click Bayas
+				if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
 
-					break;
-				default:
-					ui.setPedirArbol(false);
-					break;
 				}
-			}
-			// Click Pokebola
-			else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
-				switch (ui.getAcciones()) {
-				case 0:
-					ui.setAcciones(ui.getAcciones()+1);
-					ui.setPedirPokemon(true);
-					break;
-				case 1:
-					ui.setAcciones(ui.getAcciones()+1);
-					ui.setPedirPokemon(true);
+				// Click Arboles
+				else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
+					switch (ui.getAcciones()) {
+					case 0:
+						ui.setPedirArbol(true);
+						ui.addArbol();
+						ui.setAcciones(ui.getAcciones() + 1);
+						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
 
-					break;
-				default:
-					ui.setPedirPokemon(false);
-					break;
+						break;
+					case 1:
+						ui.setPedirArbol(true);
+						ui.setAcciones(ui.getAcciones() + 1);
+						ui.addArbol();
+						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+
+						break;
+					default:
+						ui.setPedirArbol(false);
+						break;
+					}
 				}
+				// Click Pokebola
+				else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
+					switch (ui.getAcciones()) {
+					case 0:
+						ui.setPedirPokemon(true);
+						ui.setAcciones(ui.getAcciones() + 1);
+						ui.addPoke();
+						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
+						break;
+					case 1:
+						ui.setPedirPokemon(true);
+						ui.setAcciones(ui.getAcciones() + 1);
+						ui.addPoke();
+						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
+					
+						break;
+					default:
+						ui.setPedirPokemon(false);
+						break;
+					}
+				}
+
+				break;
 			}
-			
-			
-			break;
-		}
 		}
 
 	}
-	
+
 	public void turnoTerminado() {
-			cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
-			System.out.println("turnoterminado");
+		cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
+		System.out.println("turnoterminado");
 	}
 
 	public void keyKeleased() {
@@ -120,14 +122,12 @@ public class Mundo implements Observer, Runnable {
 				System.out.println("Hola soy el equipo: " + ui.getSelEquipo());
 			}
 			break;
-			
-			
-		case 3: 
-			
+
+		case 3:
+
 			break;
 		}
 		ui.keyReleased();
-
 
 	}
 
@@ -148,29 +148,29 @@ public class Mundo implements Observer, Runnable {
 				start = true;
 
 			}
-			
-			 if (m.getM().equalsIgnoreCase("turno")) {
+
+			if (m.getM().equalsIgnoreCase("turno")) {
 				ui.setTurno(m.getIndex());
-				if (m.getEquipo() <= 2) {
-					ui.setEstacion(0);
-				} else if (m.getEquipo() > 2 && m.getEquipo()<=5) {
-					ui.setEstacion(1);
-				} else if (m.getEquipo() > 5 && m.getEquipo()<=8) {
-					ui.setEstacion(2);
-				} else if (m.getEquipo() > 8) {
-					ui.setEstacion(3);
-				} 
 				
+
 				System.out.println("Turno" + m.getIndex());
 			}
 			
-			
+			if (m.getM().equalsIgnoreCase("nuevoMes")) {
+				ui.setAcciones(0);
+				ui.setBayasTurno(false);
+				if (ui.getEstacion()<4) {
+					ui.setEstacion(m.getIndex());
+				}
+				
+			}
+
 		}
 
 	}
 
 	// ----------------GETTERS Y SETTERS------------//
-	
+
 	public Cargar getCargar() {
 		return cargar;
 	}

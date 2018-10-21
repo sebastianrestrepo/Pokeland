@@ -18,9 +18,12 @@ public class UI implements Observer {
 	private int equipoTemp;
 	private boolean turnoterminado, turnoactivado, bayasTurno, pedirArbol, pedirPokemon;
 	private PImage turnoBoton;
+	
 	private ArrayList<Arbol> arbolesList;
-	private Arbol arbol;
 
+	private ArrayList<Pokemon> pokeList;
+	private int pokeType;
+	
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
 		this.m = m;
@@ -43,6 +46,7 @@ public class UI implements Observer {
 		pedirPokemon = false;
 		acciones = 0;
 		arbolesList = new ArrayList<>();
+		pokeList = new ArrayList<>();
 	}
 
 	public void seleccionEquipo() {
@@ -147,6 +151,9 @@ public class UI implements Observer {
 			for (int i = 0; i < arbolesList.size(); i++) {
 				arbolesList.get(i).pintar(estacion);				
 			}
+			for (int i = 0; i < pokeList.size(); i++) {
+				pokeList.get(i).pintar();				
+			}
 			// Version UI segun equipo
 			switch (versionesUI) {
 			case 0:
@@ -222,6 +229,14 @@ public class UI implements Observer {
 					}
 					
 				} 
+				
+				if (pedirPokemon) {
+					if (!pokeList.isEmpty()) {
+						pokeList.get(pokeList.size()-1).setX(app.mouseX);
+						pokeList.get(pokeList.size()-1).setY(app.mouseY);
+					}
+					
+				} 
 			}
 			break;
 
@@ -258,6 +273,13 @@ public class UI implements Observer {
 						pedirArbol= false;
 
 					} 
+				 
+				 if (pedirPokemon) {
+						pokeList.get(pokeList.size()-1).setX(app.mouseX);
+						pokeList.get(pokeList.size()-1).setY(app.mouseY);
+						pedirPokemon= false;
+
+					}
 
 			}
 
@@ -267,6 +289,12 @@ public class UI implements Observer {
 	
 	public void addArbol() {
 		arbolesList.add(new Arbol(app, app.mouseX, app.mouseY));
+
+	}
+	
+	public void addPoke() {
+		pokeType = (int) app.random(0,3);
+		pokeList.add(new Pokemon(app, app.mouseX, app.mouseY, pokeType));
 
 	}
 
