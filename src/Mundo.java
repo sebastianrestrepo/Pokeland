@@ -247,24 +247,7 @@ public class Mundo implements Observer, Runnable {
 				} else {
 					ui.setEstacion(3);
 				}
-				int tempBosque;
-				switch (ui.getEstacion()) {
-				case 0:
-					ui.setBosque(250);
-					break;
-				case 1:
-					ui.setBosque(200);
-					break;
-				case 2:
-					ui.setBosque(120);
-					break;
-				case 3:
-					ui.setBosque(100);
-					break;
-
-				default:
-					break;
-				}
+			
 			}
 		}
 	}
