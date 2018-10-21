@@ -47,7 +47,6 @@ public class ComunicacionCliente extends Observable implements Runnable {
 		try {
 			Mensaje m = (Mensaje) entrada.readObject();
 			setChanged();
-			System.out.println("Mensaje enviado: " + m.getEquipo());
 			notifyObservers(m);
 			clearChanged();
 

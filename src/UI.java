@@ -3,6 +3,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
 
 public class UI implements Observer {
@@ -21,22 +22,23 @@ public class UI implements Observer {
 	private int consumo, bayas, opcionesBayas, bosque;
 	private int pokeAddedTurno, treeAddedTurno, bayasAddedTurno;
 	private boolean mostrarMenuBayas;
-	
+	private int opacity;
+	private PFont font;
 	private ArrayList<Arbol> arbolesList;
 
 	private ArrayList<Pokemon> pokeList;
 	private int pokeType;
-	
+
 	private int totalturnos;
-	
+
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
 		this.m = m;
 		cargar();
 		inicializar();
 		arbolesList.add(new Arbol(app, 55, 55));
-		pokeType = (int) app.random(0,4);
-		pokeList.add(new Pokemon(app, 550,300, pokeType));
+		pokeType = (int) app.random(0, 4);
+		pokeList.add(new Pokemon(app, 550, 300, pokeType));
 
 	}
 
@@ -58,6 +60,9 @@ public class UI implements Observer {
 		totalturnos = 1;
 		mostrarMenuBayas = false;
 		bosque = 250;
+		bayas= 20;
+		font = app.createFont("../data/fonts/PixelOperator-Bold.ttf", 32);
+		app.textFont(font);
 	}
 
 	public void seleccionEquipo() {
@@ -106,7 +111,6 @@ public class UI implements Observer {
 			uiAz[j] = app.loadImage("../data/turnos/blue" + j + ".png");
 		}
 
-		
 		// Fondo Primavera
 		fondoPrimavera = app.loadImage("../data/Fondos/back0.png");
 		// Fondo Verano
@@ -117,7 +121,7 @@ public class UI implements Observer {
 		fondoInvierno = app.loadImage("../data/Fondos/back3.png");
 		// Boton turno
 		turnoBoton = app.loadImage("../data/turnos/turnoboton.png");
-		//menubayas
+		// menubayas
 		menuBayas = app.loadImage("../data/pedidos/pedidos.png");
 	}
 
@@ -160,12 +164,12 @@ public class UI implements Observer {
 				app.image(fondoInvierno, 0, 0);
 				break;
 			}
-			
+
 			for (int i = 0; i < arbolesList.size(); i++) {
-				arbolesList.get(i).pintar(estacion);				
+				arbolesList.get(i).pintar(estacion);
 			}
 			for (int i = 0; i < pokeList.size(); i++) {
-				pokeList.get(i).pintar();				
+				pokeList.get(i).pintar();
 			}
 			// Version UI segun equipo
 			switch (versionesUI) {
@@ -200,21 +204,17 @@ public class UI implements Observer {
 			app.fill(0);
 
 			// bayas del jugador
-			app.textSize(21);
-			app.text(bayas, 103, 50);
+			app.fill(51, 54, 58);
+			app.textSize(35);
+			app.text(bayas, 103, 70);
 			// bayas del bosque
-			app.text(bosque, 246, 50);
-			//Consumo
-			app.text(consumo, 990, 50);
+			app.text(bosque, 246, 70);
+			// Consumo
+			app.text(consumo, 990, 70);
 			// Turno
-			app.fill(255);
-			app.text(totalturnos, 1115, 50);
+			app.text(totalturnos, 1128, 70);
 
-			// Instrucciones
-			if (insSwitch < 10) {
-				app.image(ins[insSwitch], 0, 0);
-			}
-
+		
 			if (turno == selEquipo) {
 				turnoactivado = true;
 
@@ -223,18 +223,20 @@ public class UI implements Observer {
 			}
 
 			if (turnoactivado) {
-				
-			//actualizar consumo
-				consumo= pokeList.size()*5;
-				
-			// Mostrar Menú Bayas
-			if (mostrarMenuBayas) {
-				app.imageMode(app.CENTER);
-				app.image(menuBayas, app.width / 2, app.height / 2);
-				app.imageMode(app.CORNER);
-			}
-			
+
+				// actualizar consumo
+				consumo = pokeList.size() * 5;
+
+				// Mostrar Menú Bayas
+				if (mostrarMenuBayas) {
+					app.imageMode(app.CENTER);
+					app.image(menuBayas, app.width / 2, app.height / 2);
+					app.imageMode(app.CORNER);
+				}
+
+				app.tint(255, opacity);
 				app.image(turnoBoton, 0, 0);
+				app.tint(255, 255);
 				// Click Bayas
 				if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
 					botones = 1;
@@ -252,20 +254,25 @@ public class UI implements Observer {
 
 				if (pedirArbol) {
 					if (!arbolesList.isEmpty()) {
-						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
-						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
+						arbolesList.get(arbolesList.size() - 1).setX(app.mouseX);
+						arbolesList.get(arbolesList.size() - 1).setY(app.mouseY);
 					}
-					
-				} 
-				
+
+				}
+
 				if (pedirPokemon) {
 					if (!pokeList.isEmpty()) {
-						pokeList.get(pokeList.size()-1).setX(app.mouseX);
-						pokeList.get(pokeList.size()-1).setY(app.mouseY);
+						pokeList.get(pokeList.size() - 1).setX(app.mouseX);
+						pokeList.get(pokeList.size() - 1).setY(app.mouseY);
 					}
-					
-				} 
+
+				}
 			}
+			// Instrucciones
+			if (insSwitch < 10) {
+				app.image(ins[insSwitch], 0, 0);
+			}
+
 			break;
 
 		/// --------------------JUEGOOOOOOOOOOOOOOOO----------------
@@ -276,10 +283,27 @@ public class UI implements Observer {
 
 	}
 
+	public void animation() {
+		Thread t = new Thread(new Runnable() {
+
+			public void run() {
+				if (opacity < 255) {
+					for (int i = 0; i < 5; i++) {
+						opacity += 51;
+					}
+					
+				} else {
+					opacity = 255;
+				}
+			}
+		});
+		t.start();
+	}
+
 	public void click() {
-	//	System.out.println("Pantallas: " + pantallas);
+		// System.out.println("Pantallas: " + pantallas);
 		switch (pantallas) {
-		
+
 		case 3:
 			if (insSwitch < 11) {
 				insSwitch++;
@@ -287,26 +311,26 @@ public class UI implements Observer {
 
 			///// ------------- TURNOOOOOOOO -----------------//////
 			if (turnoactivado) {
-//				System.out.println("T" + turno + "e" + selEquipo);
+				// System.out.println("T" + turno + "e" + selEquipo);
 				if (app.mouseX > 552 && app.mouseY > 616 && app.mouseX < 800 && app.mouseY < 677) {
 					turnoterminado = true;
 					m.turnoTerminado();
 					totalturnos++;
 					turnoactivado = false;
 				}
-				
+
 				if (app.mouseX > 55 && app.mouseY > 20 && app.mouseX < 1055 && app.mouseY < 536) {
-				 if (pedirArbol) {
-						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
-						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
+					if (pedirArbol) {
+						arbolesList.get(arbolesList.size() - 1).setX(app.mouseX);
+						arbolesList.get(arbolesList.size() - 1).setY(app.mouseY);
 						acciones++;
-						pedirArbol= false;
-					} 
-				 if (pedirPokemon) {
-						pokeList.get(pokeList.size()-1).setX(app.mouseX);
-						pokeList.get(pokeList.size()-1).setY(app.mouseY);
+						pedirArbol = false;
+					}
+					if (pedirPokemon) {
+						pokeList.get(pokeList.size() - 1).setX(app.mouseX);
+						pokeList.get(pokeList.size() - 1).setY(app.mouseY);
 						acciones++;
-						pedirPokemon= false;
+						pedirPokemon = false;
 					}
 				}
 			}
@@ -314,28 +338,14 @@ public class UI implements Observer {
 			break;
 		}
 	}
-	
-	
-	public void addBayas() {
-		switch (opcionesBayas) {
-		case 0:
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		}
-	}
-	
+
 	public void addArbol() {
 		arbolesList.add(new Arbol(app, app.mouseX, app.mouseY));
 		treeAddedTurno++;
 	}
-	
+
 	public void addPoke() {
-		pokeType = (int) app.random(0,4);
+		pokeType = (int) app.random(0, 4);
 		pokeList.add(new Pokemon(app, app.mouseX, app.mouseY, pokeType));
 		pokeAddedTurno++;
 
@@ -373,13 +383,13 @@ public class UI implements Observer {
 		}
 
 	}
-	
 
 	public void pokemonRunAway() {
-		pokeList.remove(pokeList.size()-1);
+		pokeList.remove(pokeList.size() - 1);
 	}
 
 	// ------GETTERS Y SETTERS-----//
+	
 
 	public int getBotones() {
 		return botones;
@@ -484,8 +494,8 @@ public class UI implements Observer {
 	public void setTurno(int turno) {
 		this.turno = turno;
 	}
-	
-		public int getConsumo() {
+
+	public int getConsumo() {
 		return consumo;
 	}
 
@@ -516,11 +526,11 @@ public class UI implements Observer {
 	public void setMostrarMenuBayas(boolean mostrarMenuBayas) {
 		this.mostrarMenuBayas = mostrarMenuBayas;
 	}
-	
+
 	public int getNumPokemon() {
 		return pokeList.size();
 	}
-	
+
 	public int getNumArboles() {
 		return arbolesList.size();
 	}
@@ -564,8 +574,6 @@ public class UI implements Observer {
 	public void setBosque(int bosque) {
 		this.bosque = bosque;
 	}
-
-	
 
 	// ----------FINAL DE LA CLASE UI---------//
 }
