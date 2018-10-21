@@ -17,13 +17,17 @@ public class UI implements Observer {
 	private PImage[] hover;
 	private int equipoTemp;
 	private boolean turnoterminado, turnoactivado, bayasTurno, pedirArbol, pedirPokemon;
-	private PImage turnoBoton;
-	
+	private PImage turnoBoton, menuBayas;
+	private int consumo, bayas, opcionesBayas;
+	private boolean mostrarMenuBayas;
+
 	private ArrayList<Arbol> arbolesList;
 
 	private ArrayList<Pokemon> pokeList;
 	private int pokeType;
-	
+
+	// private ArrayList<Bayas> bayasList;
+
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
 		this.m = m;
@@ -47,6 +51,7 @@ public class UI implements Observer {
 		acciones = 0;
 		arbolesList = new ArrayList<>();
 		pokeList = new ArrayList<>();
+		mostrarMenuBayas = false;
 	}
 
 	public void seleccionEquipo() {
@@ -95,7 +100,6 @@ public class UI implements Observer {
 			uiAz[j] = app.loadImage("../data/turnos/blue" + j + ".png");
 		}
 
-		
 		// Fondo Primavera
 		fondoPrimavera = app.loadImage("../data/Fondos/back0.png");
 		// Fondo Verano
@@ -106,6 +110,8 @@ public class UI implements Observer {
 		fondoInvierno = app.loadImage("../data/Fondos/back3.png");
 		// Boton turno
 		turnoBoton = app.loadImage("../data/turnos/turnoboton.png");
+
+		menuBayas = app.loadImage("../data/pedidos/pedidos.png");
 	}
 
 	public void pintar() {
@@ -147,12 +153,12 @@ public class UI implements Observer {
 				app.image(fondoInvierno, 0, 0);
 				break;
 			}
-			
+
 			for (int i = 0; i < arbolesList.size(); i++) {
-				arbolesList.get(i).pintar(estacion);				
+				arbolesList.get(i).pintar(estacion);
 			}
 			for (int i = 0; i < pokeList.size(); i++) {
-				pokeList.get(i).pintar();				
+				pokeList.get(i).pintar();
 			}
 			// Version UI segun equipo
 			switch (versionesUI) {
@@ -186,7 +192,8 @@ public class UI implements Observer {
 			}
 
 			// bayas del jugador
-			app.text(20, 103, 50);
+			app.textSize(21);
+			app.text(bayas, 103, 50);
 			// bayas del bosque
 			app.text(270, 246, 50);
 			// Turno
@@ -203,6 +210,13 @@ public class UI implements Observer {
 
 			} else {
 				turnoactivado = false;
+			}
+
+			// Mostrar Menú Bayas
+			if (mostrarMenuBayas) {
+				app.imageMode(app.CENTER);
+				app.image(menuBayas, app.width / 2, app.height / 2);
+				app.imageMode(app.CORNER);
 			}
 
 			if (turnoactivado) {
@@ -224,19 +238,19 @@ public class UI implements Observer {
 
 				if (pedirArbol) {
 					if (!arbolesList.isEmpty()) {
-						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
-						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
+						arbolesList.get(arbolesList.size() - 1).setX(app.mouseX);
+						arbolesList.get(arbolesList.size() - 1).setY(app.mouseY);
 					}
-					
-				} 
-				
+
+				}
+
 				if (pedirPokemon) {
 					if (!pokeList.isEmpty()) {
-						pokeList.get(pokeList.size()-1).setX(app.mouseX);
-						pokeList.get(pokeList.size()-1).setY(app.mouseY);
+						pokeList.get(pokeList.size() - 1).setX(app.mouseX);
+						pokeList.get(pokeList.size() - 1).setY(app.mouseY);
 					}
-					
-				} 
+
+				}
 			}
 			break;
 
@@ -265,35 +279,74 @@ public class UI implements Observer {
 					m.turnoTerminado();
 					turnoactivado = false;
 				}
-				
-				
-				 if (pedirArbol) {
-						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
-						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
-						pedirArbol= false;
 
-					} 
-				 
-				 if (pedirPokemon) {
-						pokeList.get(pokeList.size()-1).setX(app.mouseX);
-						pokeList.get(pokeList.size()-1).setY(app.mouseY);
-						pedirPokemon= false;
+				if (pedirArbol) {
+					arbolesList.get(arbolesList.size() - 1).setX(app.mouseX);
+					arbolesList.get(arbolesList.size() - 1).setY(app.mouseY);
+					pedirArbol = false;
 
-					}
+				}
+
+				if (pedirPokemon) {
+					pokeList.get(pokeList.size() - 1).setX(app.mouseX);
+					pokeList.get(pokeList.size() - 1).setY(app.mouseY);
+					pedirPokemon = false;
+
+				}
 
 			}
 
+			/*if (mostrarMenuBayas) {
+
+				if (app.mouseX > 421 && app.mouseX < 586 && app.mouseY > 278 && app.mouseY < 356) {
+					System.out.println("Consumo Exacto");
+					bayas = consumo;
+					mostrarMenuBayas = false;
+				}
+
+				if (app.mouseX > 615 && app.mouseX < 781 && app.mouseY > 278 && app.mouseY < 356) {
+					System.out.println("Consumo Exacto + mitad");
+					bayas = consumo + (consumo / 2);
+					mostrarMenuBayas = false;
+				}
+
+				if (app.mouseX > 417 && app.mouseX < 584 && app.mouseY > 382 && app.mouseY < 456) {
+					System.out.println("Consumo Exacto + consumo + mitad");
+					bayas = consumo + consumo + (consumo / 2);
+					mostrarMenuBayas = false;
+				}
+
+				if (app.mouseX > 613 && app.mouseX < 782 && app.mouseY > 382 && app.mouseY < 456) {
+					System.out.println("Consumo Exacto + consumo  + consumo");
+					bayas = consumo + consumo + consumo;
+					mostrarMenuBayas = false;
+				}
+			}
+
+			break;*/
+		}
+	}
+
+	public void addBayas() {
+		switch (opcionesBayas) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
 			break;
 		}
 	}
-	
+
 	public void addArbol() {
 		arbolesList.add(new Arbol(app, app.mouseX, app.mouseY));
 
 	}
-	
+
 	public void addPoke() {
-		pokeType = (int) app.random(0,3);
+		pokeType = (int) app.random(0, 3);
 		pokeList.add(new Pokemon(app, app.mouseX, app.mouseY, pokeType));
 
 	}
@@ -437,5 +490,45 @@ public class UI implements Observer {
 		this.turno = turno;
 	}
 
+	public int getConsumo() {
+		return consumo;
+	}
+
+	public void setConsumo(int consumo) {
+		this.consumo = consumo;
+	}
+
+	public int getBayas() {
+		return bayas;
+	}
+
+	public void setBayas(int bayas) {
+		this.bayas = bayas;
+	}
+
+	public int getOpcionesBayas() {
+		return opcionesBayas;
+	}
+
+	public void setOpcionesBayas(int opcionesBayas) {
+		this.opcionesBayas = opcionesBayas;
+	}
+
+	public boolean isMostrarMenuBayas() {
+		return mostrarMenuBayas;
+	}
+
+	public void setMostrarMenuBayas(boolean mostrarMenuBayas) {
+		this.mostrarMenuBayas = mostrarMenuBayas;
+	}
+	
+	public int getNumPokemon() {
+		return pokeList.size();
+	}
+	
+	public int getNumArboles() {
+		return arbolesList.size();
+	}
+	
 	// ----------FINAL DE LA CLASE UI---------//
 }
