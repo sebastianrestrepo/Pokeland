@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
+import ddf.minim.AudioSample;
+import ddf.minim.Minim;
 import processing.core.PApplet;
 
 public class Mundo implements Observer, Runnable {
@@ -12,12 +14,18 @@ public class Mundo implements Observer, Runnable {
 	private ComunicacionCliente cc;
 	private int equipo;
 	private boolean start;
+	private Minim minim;
+	private AudioSample turno, button, error;
 
 	public Mundo(PApplet app) {
 		this.app = app;
 		cargar = new Cargar(app);
 		start = false;
 		ui = new UI(app, this);
+		minim = new Minim(app);
+		turno = minim.loadSample("/data/sound/turn.mp3");
+		button = minim.loadSample("/data/sound/button.mp3");
+		error = minim.loadSample("/data/sound/error.mp3");
 	}
 
 	public void pintar() {
@@ -26,7 +34,7 @@ public class Mundo implements Observer, Runnable {
 		try {
 			if (ui.getPantallas() == 2) {
 				if (start) {
-					Thread.sleep(5000);
+					Thread.sleep(1000);
 					ui.setPantallas(3);
 				}
 			}
@@ -59,12 +67,14 @@ public class Mundo implements Observer, Runnable {
 				else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
 					switch (ui.getAcciones()) {
 					case 0:
+						button.trigger();
 						ui.setPedirArbol(true);
 						ui.addArbol();
 						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
 
 						break;
 					case 1:
+						button.trigger();
 						ui.setPedirArbol(true);
 						ui.addArbol();
 						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
@@ -72,6 +82,7 @@ public class Mundo implements Observer, Runnable {
 						break;
 					default:
 						ui.setPedirArbol(false);
+						error.trigger();
 						break;
 					}
 				}
@@ -79,18 +90,21 @@ public class Mundo implements Observer, Runnable {
 				else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
 					switch (ui.getAcciones()) {
 					case 0:
+						button.trigger();
 						ui.setPedirPokemon(true);
 						ui.addPoke();
 						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
 						break;
 					case 1:
+						button.trigger();
 						ui.setPedirPokemon(true);
 						ui.addPoke();
 						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
-					
+
 						break;
 					default:
 						ui.setPedirPokemon(false);
+						error.trigger();
 						break;
 					}
 				}
@@ -147,20 +161,21 @@ public class Mundo implements Observer, Runnable {
 
 			if (m.getM().equalsIgnoreCase("turno")) {
 				ui.setTurno(m.getIndex());
-				
-
+				if (ui.getSelEquipo() == m.getIndex()) {
+					turno.trigger();
+				}
 				System.out.println("Turno" + m.getIndex());
 			}
-			
+
 			if (m.getM().equalsIgnoreCase("nuevoMes")) {
 				ui.setAcciones(0);
 				ui.setBayasTurno(false);
-				if (ui.getEstacion()<=2) {
+				if (ui.getEstacion() <= 2) {
 					ui.setEstacion(m.getIndex());
 				} else {
 					ui.setEstacion(3);
 				}
-				
+
 			}
 
 		}
