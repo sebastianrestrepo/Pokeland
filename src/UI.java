@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,10 +13,13 @@ public class UI implements Observer {
 	private PImage equipoAmarillo, equipoRojo, equipoAzul, equipoVerde;
 	private PImage fondoVerano, fondoInvierno, fondoOtono, fondoPrimavera;
 	private PImage[] ins, ui, uiAm, uiAz, uiV, uiR;
-	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion, turno;
+	private int pantallas, insSwitch, selEquipo, botones, versionesUI, estacion, turno, acciones;
 	private PImage[] hover;
 	private int equipoTemp;
-	private boolean turnoterminado, turnoactivado;
+	private boolean turnoterminado, turnoactivado, bayasTurno, pedirArbol, pedirPokemon;
+	private PImage turnoBoton;
+	private ArrayList<Arbol> arbolesList;
+	private Arbol arbol;
 
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
@@ -34,6 +38,11 @@ public class UI implements Observer {
 		turno = 0;
 		turnoterminado = false;
 		turnoactivado = false;
+		bayasTurno = false;
+		pedirArbol = false;
+		pedirPokemon = false;
+		acciones = 0;
+		arbolesList = new ArrayList<>();
 	}
 
 	public void seleccionEquipo() {
@@ -81,6 +90,8 @@ public class UI implements Observer {
 		for (int j = 0; j < uiAz.length; j++) {
 			uiAz[j] = app.loadImage("../data/turnos/blue" + j + ".png");
 		}
+
+		
 		// Fondo Primavera
 		fondoPrimavera = app.loadImage("../data/Fondos/back0.png");
 		// Fondo Verano
@@ -89,6 +100,8 @@ public class UI implements Observer {
 		fondoOtono = app.loadImage("../data/Fondos/back2.png");
 		// Fondo Invierno
 		fondoInvierno = app.loadImage("../data/Fondos/back3.png");
+		// Boton turno
+		turnoBoton = app.loadImage("../data/turnos/turnoboton.png");
 	}
 
 	public void pintar() {
@@ -130,6 +143,10 @@ public class UI implements Observer {
 				app.image(fondoInvierno, 0, 0);
 				break;
 			}
+			
+			for (int i = 0; i < arbolesList.size(); i++) {
+				arbolesList.get(i).pintar(estacion);				
+			}
 			// Version UI segun equipo
 			switch (versionesUI) {
 			case 0:
@@ -160,33 +177,51 @@ public class UI implements Observer {
 				app.image(hover[2], 0, 0);
 				break;
 			}
+
+			// bayas del jugador
+			app.text(20, 103, 50);
+			// bayas del bosque
+			app.text(270, 246, 50);
+			// Turno
+			app.text(01, 1115, 50);
+			app.fill(255);
+
 			// Instrucciones
 			if (insSwitch < 10) {
 				app.image(ins[insSwitch], 0, 0);
 			}
 
-			// Click Bayas
-			if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
-				botones = 1;
-			}
-			// Click Arboles
-			if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
-				botones = 2;
-			}
-			// Click Pokebola
-			if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
-				botones = 3;
-			}
 			if (turno == selEquipo) {
 				turnoactivado = true;
-			
+
 			} else {
 				turnoactivado = false;
 			}
-			
+
 			if (turnoactivado) {
-				app.ellipse(600, 600, 50, 50);
-				app.fill(255);
+				app.image(turnoBoton, 0, 0);
+				// Click Bayas
+				if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+					botones = 1;
+				}
+				// Click Arboles
+				else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
+					botones = 2;
+				}
+				// Click Pokebola
+				else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
+					botones = 3;
+				} else {
+					botones = 0;
+				}
+
+				if (pedirArbol) {
+					if (!arbolesList.isEmpty()) {
+						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
+						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
+					}
+					
+				} 
 			}
 			break;
 
@@ -200,37 +235,39 @@ public class UI implements Observer {
 
 	public void click() {
 		System.out.println("Pantallas: " + pantallas);
-		System.out.println("InsSwitch: " + insSwitch);
 		switch (pantallas) {
 
 		case 3:
 			if (insSwitch < 11) {
 				insSwitch++;
-
 			}
-			
-			 if (turnoactivado) {
-				System.out.println("T" + turno + "e" + selEquipo);
-				if (app.dist(app.mouseX, app.mouseY, 600, 600) < 50) {
+
+			///// ------------- TURNOOOOOOOO -----------------//////
+			if (turnoactivado) {
+//				System.out.println("T" + turno + "e" + selEquipo);
+				if (app.mouseX > 552 && app.mouseY > 616 && app.mouseX < 800 && app.mouseY < 677) {
 					turnoterminado = true;
 					m.turnoTerminado();
 					turnoactivado = false;
 				}
-			} 
+				
+				
+				 if (pedirArbol) {
+						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
+						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
+						pedirArbol= false;
 
-			// Click Bayas
-			else if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
-			}
-			// Click Arboles
-			else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
-			}
-			// Click Pokebola
-			else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
+					} 
+
 			}
 
-			
 			break;
 		}
+	}
+	
+	public void addArbol() {
+		arbolesList.add(new Arbol(app, app.mouseX, app.mouseY));
+
 	}
 
 	public boolean isTurnoactivado() {
@@ -270,6 +307,38 @@ public class UI implements Observer {
 
 	public int getBotones() {
 		return botones;
+	}
+
+	public int getAcciones() {
+		return acciones;
+	}
+
+	public void setAcciones(int acciones) {
+		this.acciones = acciones;
+	}
+
+	public boolean isBayasTurno() {
+		return bayasTurno;
+	}
+
+	public void setBayasTurno(boolean bayasTurno) {
+		this.bayasTurno = bayasTurno;
+	}
+
+	public boolean isPedirArbol() {
+		return pedirArbol;
+	}
+
+	public void setPedirArbol(boolean pedirArbol) {
+		this.pedirArbol = pedirArbol;
+	}
+
+	public boolean isPedirPokemon() {
+		return pedirPokemon;
+	}
+
+	public void setPedirPokemon(boolean pedirPokemon) {
+		this.pedirPokemon = pedirPokemon;
 	}
 
 	public boolean isTurnoterminado() {

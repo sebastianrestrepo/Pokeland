@@ -12,14 +12,12 @@ public class Mundo implements Observer, Runnable {
 	private ComunicacionCliente cc;
 	private int equipo;
 	private boolean start;
-	
 
 	public Mundo(PApplet app) {
 		this.app = app;
 		cargar = new Cargar(app);
 		start = false;
 		ui = new UI(app, this);
-	
 	}
 
 	public void pintar() {
@@ -50,11 +48,57 @@ public class Mundo implements Observer, Runnable {
 			if (ui.getInsSwitch()==9) {
 				cc.enviarMensaje(new Mensaje("listo", 1, ui.getSelEquipo()));
 				System.out.println("Envio mensaje listo: ");
+			}
+			
+			 if (ui.isTurnoactivado()) {
 
+			// Click Bayas
+			 if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+				 
+			}
+			// Click Arboles
+			else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
+				switch (ui.getAcciones()) {
+				case 0:
+					ui.setPedirArbol(true);
+					ui.addArbol();
+					ui.setAcciones(ui.getAcciones()+1);
+					cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+
+					break;
+				case 1:
+					ui.setPedirArbol(true);
+					ui.setAcciones(ui.getAcciones()+1);
+					ui.addArbol();
+					cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+
+					break;
+				default:
+					ui.setPedirArbol(false);
+					break;
+				}
+			}
+			// Click Pokebola
+			else if (app.dist(app.mouseX, app.mouseY, 1132, 629) < 50) {
+				switch (ui.getAcciones()) {
+				case 0:
+					ui.setAcciones(ui.getAcciones()+1);
+					ui.setPedirPokemon(true);
+					break;
+				case 1:
+					ui.setAcciones(ui.getAcciones()+1);
+					ui.setPedirPokemon(true);
+
+					break;
+				default:
+					ui.setPedirPokemon(false);
+					break;
+				}
 			}
 			
 			
 			break;
+		}
 		}
 
 	}
