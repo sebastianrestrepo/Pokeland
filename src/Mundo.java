@@ -61,13 +61,11 @@ public class Mundo implements Observer, Runnable {
 					case 0:
 						ui.setPedirArbol(true);
 						ui.addArbol();
-						ui.setAcciones(ui.getAcciones() + 1);
 						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
 
 						break;
 					case 1:
 						ui.setPedirArbol(true);
-						ui.setAcciones(ui.getAcciones() + 1);
 						ui.addArbol();
 						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
 
@@ -82,13 +80,11 @@ public class Mundo implements Observer, Runnable {
 					switch (ui.getAcciones()) {
 					case 0:
 						ui.setPedirPokemon(true);
-						ui.setAcciones(ui.getAcciones() + 1);
 						ui.addPoke();
 						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
 						break;
 					case 1:
 						ui.setPedirPokemon(true);
-						ui.setAcciones(ui.getAcciones() + 1);
 						ui.addPoke();
 						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
 					
@@ -159,8 +155,10 @@ public class Mundo implements Observer, Runnable {
 			if (m.getM().equalsIgnoreCase("nuevoMes")) {
 				ui.setAcciones(0);
 				ui.setBayasTurno(false);
-				if (ui.getEstacion()<4) {
+				if (ui.getEstacion()<=2) {
 					ui.setEstacion(m.getIndex());
+				} else {
+					ui.setEstacion(3);
 				}
 				
 			}

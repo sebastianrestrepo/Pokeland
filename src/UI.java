@@ -24,6 +24,8 @@ public class UI implements Observer {
 	private ArrayList<Pokemon> pokeList;
 	private int pokeType;
 	
+	private int totalturnos;
+	
 	public UI(PApplet app, Mundo m) {
 		this.app = app;
 		this.m = m;
@@ -47,6 +49,7 @@ public class UI implements Observer {
 		acciones = 0;
 		arbolesList = new ArrayList<>();
 		pokeList = new ArrayList<>();
+		totalturnos = 1;
 	}
 
 	public void seleccionEquipo() {
@@ -184,14 +187,16 @@ public class UI implements Observer {
 				app.image(hover[2], 0, 0);
 				break;
 			}
+			app.fill(0);
 
 			// bayas del jugador
 			app.text(20, 103, 50);
 			// bayas del bosque
 			app.text(270, 246, 50);
-			// Turno
-			app.text(01, 1115, 50);
 			app.fill(255);
+
+			// Turno
+			app.text(totalturnos, 1115, 50);
 
 			// Instrucciones
 			if (insSwitch < 10) {
@@ -263,13 +268,18 @@ public class UI implements Observer {
 				if (app.mouseX > 552 && app.mouseY > 616 && app.mouseX < 800 && app.mouseY < 677) {
 					turnoterminado = true;
 					m.turnoTerminado();
+					totalturnos++;
 					turnoactivado = false;
+				
+
 				}
 				
-				
+				if (app.mouseX > 55 && app.mouseY > 20 && app.mouseX < 1055 && app.mouseY < 536) {
+
 				 if (pedirArbol) {
 						arbolesList.get(arbolesList.size()-1).setX(app.mouseX);
 						arbolesList.get(arbolesList.size()-1).setY(app.mouseY);
+						acciones++;
 						pedirArbol= false;
 
 					} 
@@ -277,10 +287,11 @@ public class UI implements Observer {
 				 if (pedirPokemon) {
 						pokeList.get(pokeList.size()-1).setX(app.mouseX);
 						pokeList.get(pokeList.size()-1).setY(app.mouseY);
+						acciones++;
 						pedirPokemon= false;
 
 					}
-
+				}
 			}
 
 			break;
@@ -293,7 +304,7 @@ public class UI implements Observer {
 	}
 	
 	public void addPoke() {
-		pokeType = (int) app.random(0,3);
+		pokeType = (int) app.random(0,4);
 		pokeList.add(new Pokemon(app, app.mouseX, app.mouseY, pokeType));
 
 	}

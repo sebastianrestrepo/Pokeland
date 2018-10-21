@@ -20,7 +20,6 @@ public class Arbol {
 
 	public void pintar(int estacion) {
 		this.estacion = estacion;
-
 		app.image(arboles[estacion], x, y);
 	}
 
