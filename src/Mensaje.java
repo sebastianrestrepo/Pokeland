@@ -9,6 +9,8 @@ public class Mensaje implements Serializable {
 	public Mensaje(String m, int index, int equipo, String valor) {
 		this.m = m; 
 		this.index = index;
+		this.equipo= equipo;
+		this.valor = valor;
 	}
 
 	public String getM() {

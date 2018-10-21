@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.Observable;
-import java.util.Observer;
+import java.util.Observer;import javax.management.BadBinaryOpValueExpException;
 
 import ddf.minim.AudioSample;
 import ddf.minim.Minim;
@@ -58,44 +58,56 @@ public class Mundo implements Observer, Runnable {
 			}
 
 			if (ui.isTurnoactivado()) {
+				if (!ui.isBayasTurno()) {
+					// Click Bayas
+					if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+						button.trigger();
+						ui.setMostrarMenuBayas(true);
+					}
+					// UI BAYAS
+					if (ui.isMostrarMenuBayas()) {
+						int consumoexacto = ui.getBayas() + ui.getConsumo();
+						if (app.mouseX > 421 && app.mouseX < 586 && app.mouseY > 278 && app.mouseY < 356) {
+							System.out.println("Hola, quiero consumo exacto");
+							ui.setBayas(consumoexacto);
+							ui.setBayasAddedTurno(ui.getConsumo());
+							ui.setMostrarMenuBayas(false);
+							System.out.println("Chao, gracias");
+							ui.setBayasTurno(true);
 
-				// Click Bayas
-				if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
-					ui.setMostrarMenuBayas(true);
+		}
+
+						if (app.mouseX > 615 && app.mouseX < 781 && app.mouseY > 278 && app.mouseY < 356) {
+							ui.setBayas(consumoexacto + (int)(ui.getConsumo() / 2));
+							ui.setBayasAddedTurno(ui.getConsumo() + (int)(ui.getConsumo() / 2));
+							ui.setMostrarMenuBayas(false);
+							ui.setBayasTurno(true);
+
+						}
+
+						if (app.mouseX > 417 && app.mouseX < 584 && app.mouseY > 382 && app.mouseY < 456) {
+							ui.setBayas(consumoexacto + ui.getConsumo() + (int)(ui.getConsumo() / 2));
+							ui.setBayasAddedTurno((ui.getConsumo() * 2) + (int)(ui.getConsumo() / 2));
+							ui.setMostrarMenuBayas(false);
+							ui.setBayasTurno(true);
+
+						}
+
+						if (app.mouseX > 613 && app.mouseX < 782 && app.mouseY > 382 && app.mouseY < 456) {
+							ui.setBayas(consumoexacto + (ui.getConsumo() * 2));
+							ui.setBayasAddedTurno((ui.getConsumo() * 3));
+							ui.setMostrarMenuBayas(false);
+							ui.setBayasTurno(true);
+
+						}
+
+					}
+				} else if (ui.isBayasTurno() && app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+					error.trigger();
 				}
-				if (ui.isMostrarMenuBayas()) {
 
-					if (app.mouseX > 421 && app.mouseX < 586 && app.mouseY > 278 && app.mouseY < 356) {
-						System.out.println("Consumo Exacto");
-						ui.setBayas(ui.getConsumo());
-						ui.setMostrarMenuBayas(false);
-						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
-					}
-
-					if (app.mouseX > 615 && app.mouseX < 781 && app.mouseY > 278 && app.mouseY < 356) {
-						System.out.println("Consumo Exacto + mitad");
-						ui.setBayas(ui.getConsumo()+(ui.getConsumo()/2));
-						ui.setMostrarMenuBayas(false);
-						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
-					}
-
-					if (app.mouseX > 417 && app.mouseX < 584 && app.mouseY > 382 && app.mouseY < 456) {
-						System.out.println("Consumo Exacto + consumo + mitad");
-						ui.setBayas(ui.getConsumo()+ui.getConsumo()+(ui.getConsumo()/2));
-						ui.setMostrarMenuBayas(false);
-						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
-					}
-
-					if (app.mouseX > 613 && app.mouseX < 782 && app.mouseY > 382 && app.mouseY < 456) {
-						System.out.println("Consumo Exacto + consumo  + consumo");
-						ui.setBayas(ui.getConsumo()+ui.getConsumo()+ui.getConsumo());
-						ui.setMostrarMenuBayas(false);
-						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
-					}
-					
-				}
 				// Click Arboles
-				else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
+				if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
 					switch (ui.getAcciones()) {
 					case 0:
 						button.trigger();
@@ -139,18 +151,45 @@ public class Mundo implements Observer, Runnable {
 						break;
 					}
 				}
-
-				break;
 			}
+			break;
+
 		}
 
 	}
 
 	public void turnoTerminado() {
-		//cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
-		System.out.println("turnoterminado");
-		cc.enviarMensaje(new Mensaje ("turnoterminado", ui.getBayas(), ui.getSelEquipo(), ui.getBayas() + "," + ui.getNumArboles() + ", " + ui.getNumPokemon()));
+		int tempTaken = ui.getBayasAddedTurno() +ui.getConsumo();
+		calcularPokemonAlimentado();
+		if (!ui.isBayasTurno()) {
+			ui.setBayas(ui.getBayas());
+			ui.setBayasAddedTurno(0);
+		}
+		cc.enviarMensaje(new Mensaje("turnoterminado", tempTaken , ui.getSelEquipo(),
+				ui.getBayas() + "," + ui.getNumArboles() + ", " + ui.getNumPokemon() + "," + ui.getBayasAddedTurno()
+						+ "," + ui.getTreeAddedTurno() + "," + ui.getPokeAddedTurno()));
+		ui.setBayasAddedTurno(0);
+		ui.setPokeAddedTurno(0);
+		ui.setBayasAddedTurno(0);
+		System.out.println("turnoterminado" + ui.getBayas() + "," + ui.getNumArboles() + ", " + ui.getNumPokemon() + ","
+				+ ui.getBayasAddedTurno() + "," + ui.getTreeAddedTurno() + "," + ui.getPokeAddedTurno());
+
 	}
+
+	private void calcularPokemonAlimentado() {
+		if (ui.getBayas() < ui.getConsumo()) {
+			int pokeVivos = ui.getBayas() / 5;
+			int pokeEscape = ui.getNumPokemon() - pokeVivos;
+			for (int j = 0; j < pokeEscape; j++) {
+				ui.pokemonRunAway();
+			}
+			ui.setConsumo(ui.getNumPokemon()*5);
+			ui.setBayas(ui.getBayas() - ui.getConsumo());
+		} else {
+			ui.setConsumo(ui.getNumPokemon()*5);
+			ui.setBayas(ui.getBayas() - ui.getConsumo());
+		}
+	} 
 
 	public void keyKeleased() {
 		switch (ui.getPantallas()) {
@@ -183,7 +222,6 @@ public class Mundo implements Observer, Runnable {
 				equipo = m.getIndex() - 1;
 				ui.seleccionEquipo();
 				System.out.println("Soy el Cliente #:" + m.getIndex() + equipo);
-
 			}
 
 			else if (m.getM().equalsIgnoreCase("start")) {
@@ -192,6 +230,8 @@ public class Mundo implements Observer, Runnable {
 			}
 
 			if (m.getM().equalsIgnoreCase("turno")) {
+				ui.setBosque(m.getEquipo());
+				System.out.println("RESERVA LLEGA COMO " + m.getEquipo());
 				ui.setTurno(m.getIndex());
 				if (ui.getSelEquipo() == m.getIndex()) {
 					turno.trigger();
@@ -207,11 +247,26 @@ public class Mundo implements Observer, Runnable {
 				} else {
 					ui.setEstacion(3);
 				}
+				int tempBosque;
+				switch (ui.getEstacion()) {
+				case 0:
+					ui.setBosque(250);
+					break;
+				case 1:
+					ui.setBosque(200);
+					break;
+				case 2:
+					ui.setBosque(120);
+					break;
+				case 3:
+					ui.setBosque(100);
+					break;
 
+				default:
+					break;
+				}
 			}
-
 		}
-
 	}
 
 	// ----------------GETTERS Y SETTERS------------//

@@ -25,7 +25,7 @@ public class PokelandMain extends PApplet {
 
 	@Override
 	public void mouseClicked() {
-		System.out.println("click: " + mouseX + ", " + mouseY);
+	//	System.out.println("click: " + mouseX + ", " + mouseY);
 		m.click();
 	}
 

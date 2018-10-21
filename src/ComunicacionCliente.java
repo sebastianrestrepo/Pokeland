@@ -14,22 +14,21 @@ public class ComunicacionCliente extends Observable implements Runnable {
 	private boolean conectado;
 
 	public ComunicacionCliente() {
-			try {
-				System.out.println("Conexión iniciada");
-				// -----------Cambiar a IP correspondiente-----------//
-				//192.168.0.11
-				s = new Socket(InetAddress.getByName("192.168.0.8"), 5000);
-				salida = new ObjectOutputStream(s.getOutputStream());
-				entrada = new ObjectInputStream(s.getInputStream());
-				System.out.println("Flujos enlazados");
-				conectado = true;
-			} catch (IOException e) {
-			}
+		try {
+			System.out.println("Conexión iniciada");
+			// -----------Cambiar a IP correspondiente-----------//
+			// 192.168.0.11
+			s = new Socket(InetAddress.getByName("192.168.0.8"), 5000);
+			salida = new ObjectOutputStream(s.getOutputStream());
+			entrada = new ObjectInputStream(s.getInputStream());
+			System.out.println("Flujos enlazados");
+			conectado = true;
+		} catch (IOException e) {
+		}
 	}
 
 	@Override
 	public void run() {
-	
 
 		while (conectado) {
 			try {
@@ -48,41 +47,41 @@ public class ComunicacionCliente extends Observable implements Runnable {
 		try {
 			Mensaje m = (Mensaje) entrada.readObject();
 			setChanged();
+			System.out.println("Mensaje enviado: " + m.getEquipo());
 			notifyObservers(m);
 			clearChanged();
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-    public void enviarMensaje(final Object obj){
 
-        Thread t = new Thread(new Runnable() {
+	public void enviarMensaje(final Object obj) {
 
-            public void run() {
+		Thread t = new Thread(new Runnable() {
 
-                try {
-                    Mensaje m = (Mensaje) obj;
-                    if(conectado) {
-                        if (s.isConnected()) {
-                            salida.writeObject(m);
-                            salida.flush();
-                            System.out.println("Mensaje enviado: " + m);
-                        }
-                    }
-                } catch (IOException e) {
+			public void run() {
 
-                    e.printStackTrace();
-                }
+				try {
+					Mensaje m = (Mensaje) obj;
+					if (conectado) {
+						if (s.isConnected()) {
+							salida.writeObject(m);
+							salida.flush();
+						}
+					}
+				} catch (IOException e) {
 
-            }
+					e.printStackTrace();
+				}
 
-        });
-        t.start();
-    }
+			}
+		});
+		t.start();
 
-
-	// -----------FINAL DE LA CLASE COMUNICACIÓN CLIENTE---------//
+	}
 }
+
+// -----------FINAL DE LA CLASE COMUNICACIÓN CLIENTE---------//
