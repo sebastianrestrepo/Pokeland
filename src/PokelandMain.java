@@ -28,7 +28,7 @@ public class PokelandMain extends PApplet {
 		System.out.println("click: " + mouseX + ", " + mouseY);
 		m.click();
 	}
-	
+
 	@Override
 	public void keyReleased() {
 		m.keyKeleased();

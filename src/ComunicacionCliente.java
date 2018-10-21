@@ -5,44 +5,41 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Observable;
 
-public class ComunicacionCliente extends Observable implements Runnable {
+import processing.core.PApplet;
 
+public class ComunicacionCliente extends Observable implements Runnable {
 	private Socket s;
 	private ObjectInputStream entrada;
 	private ObjectOutputStream salida;
 	private boolean conectado;
 
 	public ComunicacionCliente() {
-
-	}
-
-	@Override
-	public void run() {
-		if (!conectado) {
-
 			try {
 				System.out.println("Conexión iniciada");
 				// -----------Cambiar a IP correspondiente-----------//
 				//192.168.0.11
-				s = new Socket(InetAddress.getByName("172.30.183.136"), 5000);
+				s = new Socket(InetAddress.getByName("192.168.0.11"), 5000);
 				salida = new ObjectOutputStream(s.getOutputStream());
 				entrada = new ObjectInputStream(s.getInputStream());
 				System.out.println("Flujos enlazados");
 				conectado = true;
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
-		}
+	}
 
-		while (true) {
+	@Override
+	public void run() {
+	
+
+		while (conectado) {
 			try {
 				if (s.isConnected()) {
-					System.out.println("Esperando msj");
 					recibirMensaje();
 				}
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				conectado = false;
+				System.exit(0);
 			}
 		}
 	}
@@ -64,7 +61,6 @@ public class ComunicacionCliente extends Observable implements Runnable {
 
         Thread t = new Thread(new Runnable() {
 
-            @Override
             public void run() {
 
                 try {
