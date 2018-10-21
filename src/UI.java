@@ -17,7 +17,9 @@ public class UI implements Observer {
 	private PImage[] hover;
 	private int equipoTemp;
 	private boolean turnoterminado, turnoactivado, bayasTurno, pedirArbol, pedirPokemon;
-	private PImage turnoBoton;
+	private PImage turnoBoton, menuBayas;
+	private int consumo, bayas, opcionesBayas;
+	private boolean mostrarMenuBayas;
 	
 	private ArrayList<Arbol> arbolesList;
 
@@ -50,6 +52,7 @@ public class UI implements Observer {
 		arbolesList = new ArrayList<>();
 		pokeList = new ArrayList<>();
 		totalturnos = 1;
+		mostrarMenuBayas = false;
 	}
 
 	public void seleccionEquipo() {
@@ -109,6 +112,8 @@ public class UI implements Observer {
 		fondoInvierno = app.loadImage("../data/Fondos/back3.png");
 		// Boton turno
 		turnoBoton = app.loadImage("../data/turnos/turnoboton.png");
+		//menubayas
+		menuBayas = app.loadImage("../data/pedidos/pedidos.png");
 	}
 
 	public void pintar() {
@@ -190,7 +195,8 @@ public class UI implements Observer {
 			app.fill(0);
 
 			// bayas del jugador
-			app.text(20, 103, 50);
+			app.textSize(21);
+			app.text(bayas, 103, 50);
 			// bayas del bosque
 			app.text(270, 246, 50);
 			app.fill(255);
@@ -211,6 +217,13 @@ public class UI implements Observer {
 			}
 
 			if (turnoactivado) {
+			// Mostrar Menú Bayas
+			if (mostrarMenuBayas) {
+				app.imageMode(app.CENTER);
+				app.image(menuBayas, app.width / 2, app.height / 2);
+				app.imageMode(app.CORNER);
+			}
+			
 				app.image(turnoBoton, 0, 0);
 				// Click Bayas
 				if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
@@ -256,7 +269,7 @@ public class UI implements Observer {
 	public void click() {
 		System.out.println("Pantallas: " + pantallas);
 		switch (pantallas) {
-
+		
 		case 3:
 			if (insSwitch < 11) {
 				insSwitch++;
@@ -294,6 +307,20 @@ public class UI implements Observer {
 				}
 			}
 
+			break;
+		}
+	}
+	
+	
+	public void addBayas() {
+		switch (opcionesBayas) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
 			break;
 		}
 	}
@@ -446,6 +473,46 @@ public class UI implements Observer {
 
 	public void setTurno(int turno) {
 		this.turno = turno;
+	}
+	
+		public int getConsumo() {
+		return consumo;
+	}
+
+	public void setConsumo(int consumo) {
+		this.consumo = consumo;
+	}
+
+	public int getBayas() {
+		return bayas;
+	}
+
+	public void setBayas(int bayas) {
+		this.bayas = bayas;
+	}
+
+	public int getOpcionesBayas() {
+		return opcionesBayas;
+	}
+
+	public void setOpcionesBayas(int opcionesBayas) {
+		this.opcionesBayas = opcionesBayas;
+	}
+
+	public boolean isMostrarMenuBayas() {
+		return mostrarMenuBayas;
+	}
+
+	public void setMostrarMenuBayas(boolean mostrarMenuBayas) {
+		this.mostrarMenuBayas = mostrarMenuBayas;
+	}
+	
+	public int getNumPokemon() {
+		return pokeList.size();
+	}
+	
+	public int getNumArboles() {
+		return arbolesList.size();
 	}
 
 	// ----------FINAL DE LA CLASE UI---------//

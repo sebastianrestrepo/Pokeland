@@ -53,7 +53,7 @@ public class Mundo implements Observer, Runnable {
 
 		case 3:
 			if (ui.getInsSwitch() == 9) {
-				cc.enviarMensaje(new Mensaje("listo", 1, ui.getSelEquipo()));
+				cc.enviarMensaje(new Mensaje("listo", 1, ui.getSelEquipo(), null));
 				System.out.println("Envio mensaje listo: ");
 			}
 
@@ -61,7 +61,38 @@ public class Mundo implements Observer, Runnable {
 
 				// Click Bayas
 				if (app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
+					ui.setMostrarMenuBayas(true);
+				}
+				if (ui.isMostrarMenuBayas()) {
 
+					if (app.mouseX > 421 && app.mouseX < 586 && app.mouseY > 278 && app.mouseY < 356) {
+						System.out.println("Consumo Exacto");
+						ui.setBayas(ui.getConsumo());
+						ui.setMostrarMenuBayas(false);
+						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
+					}
+
+					if (app.mouseX > 615 && app.mouseX < 781 && app.mouseY > 278 && app.mouseY < 356) {
+						System.out.println("Consumo Exacto + mitad");
+						ui.setBayas(ui.getConsumo()+(ui.getConsumo()/2));
+						ui.setMostrarMenuBayas(false);
+						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
+					}
+
+					if (app.mouseX > 417 && app.mouseX < 584 && app.mouseY > 382 && app.mouseY < 456) {
+						System.out.println("Consumo Exacto + consumo + mitad");
+						ui.setBayas(ui.getConsumo()+ui.getConsumo()+(ui.getConsumo()/2));
+						ui.setMostrarMenuBayas(false);
+						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
+					}
+
+					if (app.mouseX > 613 && app.mouseX < 782 && app.mouseY > 382 && app.mouseY < 456) {
+						System.out.println("Consumo Exacto + consumo  + consumo");
+						ui.setBayas(ui.getConsumo()+ui.getConsumo()+ui.getConsumo());
+						ui.setMostrarMenuBayas(false);
+						cc.enviarMensaje(new Mensaje("bayas", ui.getBayas(), ui.getSelEquipo(), null));
+					}
+					
 				}
 				// Click Arboles
 				else if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
@@ -70,14 +101,14 @@ public class Mundo implements Observer, Runnable {
 						button.trigger();
 						ui.setPedirArbol(true);
 						ui.addArbol();
-						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo(), null));
 
 						break;
 					case 1:
 						button.trigger();
 						ui.setPedirArbol(true);
 						ui.addArbol();
-						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo()));
+						cc.enviarMensaje(new Mensaje("nuevoArbol", 1, ui.getSelEquipo(), null));
 
 						break;
 					default:
@@ -93,13 +124,13 @@ public class Mundo implements Observer, Runnable {
 						button.trigger();
 						ui.setPedirPokemon(true);
 						ui.addPoke();
-						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
+						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo(), null));
 						break;
 					case 1:
 						button.trigger();
 						ui.setPedirPokemon(true);
 						ui.addPoke();
-						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo()));
+						cc.enviarMensaje(new Mensaje("nuevoPoke", 1, ui.getSelEquipo(), null));
 
 						break;
 					default:
@@ -116,8 +147,9 @@ public class Mundo implements Observer, Runnable {
 	}
 
 	public void turnoTerminado() {
-		cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
+		//cc.enviarMensaje(new Mensaje("turnoterminado", 1, ui.getSelEquipo()));
 		System.out.println("turnoterminado");
+		cc.enviarMensaje(new Mensaje ("turnoterminado", ui.getBayas(), ui.getSelEquipo(), ui.getBayas() + "," + ui.getNumArboles() + ", " + ui.getNumPokemon()));
 	}
 
 	public void keyKeleased() {
@@ -127,7 +159,7 @@ public class Mundo implements Observer, Runnable {
 				cc = new ComunicacionCliente();
 				new Thread(cc).start();
 				cc.addObserver(this);
-				cc.enviarMensaje(new Mensaje("Holap", 1, ui.getSelEquipo()));
+				cc.enviarMensaje(new Mensaje("Holap", 1, ui.getSelEquipo(), null));
 
 				System.out.println("Hola soy el equipo: " + ui.getSelEquipo());
 			}
