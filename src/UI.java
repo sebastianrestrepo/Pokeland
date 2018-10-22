@@ -23,6 +23,7 @@ public class UI implements Observer {
 	private int pokeAddedTurno, treeAddedTurno, bayasAddedTurno;
 	private boolean mostrarMenuBayas;
 	private int opacity;
+	private PImage fin;
 	private PFont font;
 	private ArrayList<Arbol> arbolesList;
 
@@ -74,6 +75,7 @@ public class UI implements Observer {
 	public void cargar() {
 		// Inicio
 		splash = app.loadImage("../data/ui/splash.png");
+		fin = app.loadImage("../data/fin.png");
 		nombre = app.loadImage("../data/ui/nombre.png");
 		amarilla = app.loadImage("../data/ui/amarilla.png");
 		// Selección de Equipos
@@ -149,6 +151,10 @@ public class UI implements Observer {
 			break;
 		/// --------------------JUEGOOOOOOOOOOOOOOOO----------------
 		case 3:
+			
+			if (totalturnos>=13) {
+				pantallas=4;
+			}
 			// backgrounds de las estaciones
 			switch (estacion) {
 			case 0:
@@ -274,7 +280,10 @@ public class UI implements Observer {
 			}
 
 			break;
-
+			
+		case 4:
+			app.image(fin, 0, 0);
+			break;
 		/// --------------------JUEGOOOOOOOOOOOOOOOO----------------
 
 		// Final Pantallas
