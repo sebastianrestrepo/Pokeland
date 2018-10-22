@@ -45,9 +45,10 @@ public class ComunicacionCliente extends Observable implements Runnable {
 
 	private void recibirMensaje() {
 		try {
-			Mensaje m = (Mensaje) entrada.readObject();
+	
+			Mensaje mensajeServ = (Mensaje) entrada.readObject();
 			setChanged();
-			notifyObservers(m);
+			notifyObservers(mensajeServ);
 			clearChanged();
 
 		} catch (ClassNotFoundException e) {

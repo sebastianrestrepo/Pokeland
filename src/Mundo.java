@@ -16,6 +16,7 @@ public class Mundo implements Observer, Runnable {
 	private boolean start;
 	private Minim minim;
 	private AudioSample turno, button, error;
+	private int _estacion, ronda, _cantTurnos;
 
 	public Mundo(PApplet app) {
 		this.app = app;
@@ -26,11 +27,13 @@ public class Mundo implements Observer, Runnable {
 		turno = minim.loadSample("/data/sound/turn.mp3");
 		button = minim.loadSample("/data/sound/button.mp3");
 		error = minim.loadSample("/data/sound/error.mp3");
+		_estacion = 0 ;
+		ronda = 0;
+		_cantTurnos = 0;
 	}
 
 	public void pintar() {
 		ui.pintar();
-
 		try {
 			if (ui.getPantallas() == 2) {
 				if (start) {
@@ -38,12 +41,9 @@ public class Mundo implements Observer, Runnable {
 					ui.setPantallas(3);
 				}
 			}
-
 		} catch (InterruptedException e) {
-
 			e.printStackTrace();
 		}
-
 	}
 
 	public void click() {
@@ -74,8 +74,7 @@ public class Mundo implements Observer, Runnable {
 							ui.setMostrarMenuBayas(false);
 							System.out.println("Chao, gracias");
 							ui.setBayasTurno(true);
-
-		}
+							}
 
 						if (app.mouseX > 615 && app.mouseX < 781 && app.mouseY > 278 && app.mouseY < 356) {
 							int tempPedido = consumoPedido(consumoexacto + (int)(ui.getConsumo() / 2));
@@ -92,7 +91,6 @@ public class Mundo implements Observer, Runnable {
 							ui.setBayasAddedTurno((ui.getConsumo() * 2) + (int)(ui.getConsumo() / 2));
 							ui.setMostrarMenuBayas(false);
 							ui.setBayasTurno(true);
-
 						}
 
 						if (app.mouseX > 613 && app.mouseX < 782 && app.mouseY > 382 && app.mouseY < 456) {
@@ -102,12 +100,10 @@ public class Mundo implements Observer, Runnable {
 							ui.setMostrarMenuBayas(false);
 							ui.setBayasTurno(true);
 						}
-
 					}
 				} else if (ui.isBayasTurno() && app.dist(app.mouseX, app.mouseY, 921, 629) < 50) {
 					error.trigger();
 				}
-
 				// Click Arboles
 				if (app.dist(app.mouseX, app.mouseY, 1027, 629) < 50) {
 					switch (ui.getAcciones()) {
@@ -155,9 +151,7 @@ public class Mundo implements Observer, Runnable {
 				}
 			}
 			break;
-
 		}
-
 	}
 	private int consumoPedido(int consumoPedido) { 
 		if (ui.getBosque() < consumoPedido) {
@@ -171,6 +165,7 @@ public class Mundo implements Observer, Runnable {
 		}
 	}
 	public void turnoTerminado() {
+		System.out.println("EstacionTURNOCLICK" + _estacion);
 		int tempTaken = ui.getBayasAddedTurno();
 		System.out.println("Bayas tomadas" + tempTaken);
 		calcularPokemonAlimentado();
@@ -181,6 +176,7 @@ public class Mundo implements Observer, Runnable {
 		cc.enviarMensaje(new Mensaje("turnoterminado", tempTaken , ui.getSelEquipo(),
 				ui.getBayas() + "," + ui.getNumArboles() + "," + ui.getNumPokemon() + "," + ui.getBayasAddedTurno()
 						+ "," + ui.getTreeAddedTurno() + "," + ui.getPokeAddedTurno()));
+		setRonda();
 		ui.setBayasAddedTurno(0);
 		ui.setPokeAddedTurno(0);
 		ui.setBayasAddedTurno(0);
@@ -212,7 +208,6 @@ public class Mundo implements Observer, Runnable {
 				new Thread(cc).start();
 				cc.addObserver(this);
 				cc.enviarMensaje(new Mensaje("Holap", 1, ui.getSelEquipo(), null));
-
 				System.out.println("Hola soy el equipo: " + ui.getSelEquipo());
 			}
 			break;
@@ -223,6 +218,32 @@ public class Mundo implements Observer, Runnable {
 		}
 		ui.keyReleased();
 
+	}
+	
+	private void calcularestacion() {
+		ronda++;
+		if (ronda % 3 == 0) {
+			_estacion++;
+			System.out.println("Estacion" + _estacion);
+			ronda = 0;
+			if (ui.getEstacion() <= 2) {
+				ui.setEstacion(_estacion);
+			} else {
+				ui.setEstacion(3);
+			}
+		}
+	}
+
+	private void calcularRonda(){
+		_cantTurnos++;
+		if (_cantTurnos % 4 == 0) {
+			calcularestacion();
+			_cantTurnos=0;
+			}
+	}
+	private void setRonda() {
+		ui.setAcciones(0);
+		ui.setBayasTurno(false);
 	}
 
 	@Override
@@ -237,33 +258,20 @@ public class Mundo implements Observer, Runnable {
 				System.out.println("Soy el Cliente #:" + m.getIndex() + equipo);
 			}
 
-			else if (m.getM().equalsIgnoreCase("start")) {
+			if (m.getM().equalsIgnoreCase("start")) {
 				start = true;
-
 			}
 
 			
 			if (m.getM().equalsIgnoreCase("turno")) {
-				String[] tempV = PApplet.splitTokens(m.getValor(), ",");
-				ui.animation();
-				ui.setBosque(Integer.parseInt(tempV[0]));
 				ui.setTurno(m.getIndex());
 				if (ui.getSelEquipo() == m.getIndex()) {
 					turno.trigger();
+					ui.animation();
 				}
-				if (tempV[1].equalsIgnoreCase("mes")) {
-					ui.setAcciones(0);
-					ui.setBayasTurno(false);
-					if (ui.getEstacion() <= 2) {
-						ui.setEstacion(m.getEquipo());
-					} else {
-						ui.setEstacion(3);
-					}
-				} else if (tempV[1].equalsIgnoreCase("nada")) {
-					return;
-				}
+				ui.setBosque(Integer.parseInt(m.getValor()));
+				calcularRonda();
 				System.out.println("Turno" + m.getIndex());
-				
 			}
 
 		/*	else if (m.getM().equalsIgnoreCase("turnoMes")) {

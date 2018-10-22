@@ -313,10 +313,14 @@ public class UI implements Observer {
 			if (turnoactivado) {
 				// System.out.println("T" + turno + "e" + selEquipo);
 				if (app.mouseX > 552 && app.mouseY > 616 && app.mouseX < 800 && app.mouseY < 677) {
-					turnoterminado = true;
-					m.turnoTerminado();
-					totalturnos++;
-					turnoactivado = false;
+					if (totalturnos<=12) {
+						turnoterminado = true;
+						m.turnoTerminado();
+						totalturnos++;
+					} else {
+						turnoactivado = false;
+					}
+					
 				}
 
 				if (app.mouseX > 55 && app.mouseY > 20 && app.mouseX < 1055 && app.mouseY < 536) {
