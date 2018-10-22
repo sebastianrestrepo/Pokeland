@@ -242,29 +242,40 @@ public class Mundo implements Observer, Runnable {
 
 			}
 
-			String[] tempM = PApplet.splitTokens(m.getM(), ",");
-
+			
 			if (m.getM().equalsIgnoreCase("turno")) {
+				String[] tempV = PApplet.splitTokens(m.getValor(), ",");
 				ui.animation();
-				ui.setBosque(Integer.parseInt(m.getValor()));
+				ui.setBosque(Integer.parseInt(tempV[0]));
+				ui.setTurno(m.getIndex());
+				if (ui.getSelEquipo() == m.getIndex()) {
+					turno.trigger();
+				}
+				if (tempV[1].equalsIgnoreCase("mes")) {
+					ui.setAcciones(0);
+					ui.setBayasTurno(false);
+					if (ui.getEstacion() <= 2) {
+						ui.setEstacion(m.getEquipo());
+					} else {
+						ui.setEstacion(3);
+					}
+				} else if (tempV[1].equalsIgnoreCase("nada")) {
+					return;
+				}
+				System.out.println("Turno" + m.getIndex());
+				
+			}
+
+		/*	else if (m.getM().equalsIgnoreCase("turnoMes")) {
+				
 				ui.setTurno(m.getIndex());
 				if (ui.getSelEquipo() == m.getIndex()) {
 					turno.trigger();
 				}
 				System.out.println("Turno" + m.getIndex());
-			}
-
-			if (m.getM().equalsIgnoreCase("turnoMes")) {
-				ui.setAcciones(0);
-				ui.setBayasTurno(false);
-				if (ui.getEstacion() <= 2) {
-					ui.setEstacion(m.getEquipo());
-				} else {
-					ui.setEstacion(3);
-				}
 				ui.setBosque(Integer.parseInt(m.getValor()));
 				return;
-		}
+		}*/
 		}
 	}
 
