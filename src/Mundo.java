@@ -242,10 +242,11 @@ public class Mundo implements Observer, Runnable {
 
 			}
 
+			String[] tempM = PApplet.splitTokens(m.getM(), ",");
+
 			if (m.getM().equalsIgnoreCase("turno")) {
 				ui.animation();
-				ui.setBosque(m.getEquipo());
-				System.out.println("RESERVA LLEGA COMO " + m.getEquipo());
+				ui.setBosque(Integer.parseInt(m.getValor()));
 				ui.setTurno(m.getIndex());
 				if (ui.getSelEquipo() == m.getIndex()) {
 					turno.trigger();
@@ -253,7 +254,7 @@ public class Mundo implements Observer, Runnable {
 				System.out.println("Turno" + m.getIndex());
 			}
 
-			if (m.getM().equalsIgnoreCase("nuevoMes")) {
+			if (m.getM().equalsIgnoreCase("turnoMes")) {
 				ui.setAcciones(0);
 				ui.setBayasTurno(false);
 				if (ui.getEstacion() <= 2) {
@@ -261,12 +262,9 @@ public class Mundo implements Observer, Runnable {
 				} else {
 					ui.setEstacion(3);
 				}
-				ui.setTurno(m.getIndex());
-				if (ui.getSelEquipo() == m.getIndex()) {
-					turno.trigger();
-				}
 				ui.setBosque(Integer.parseInt(m.getValor()));
-			}
+				return;
+		}
 		}
 	}
 
@@ -296,7 +294,6 @@ public class Mundo implements Observer, Runnable {
 		this.app = app;
 	}
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 
